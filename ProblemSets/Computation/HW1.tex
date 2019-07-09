@@ -1,0 +1,96 @@
+\documentclass[12pt]{article}
+\usepackage[]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amssymb, amsmath, amstext}
+\usepackage{hyperref}
+\usepackage{amsmath,blkarray}
+\usepackage{fancyhdr}
+\usepackage[]{algorithm2e}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{mathtools} 
+\usepackage{lscape}
+\usepackage{breqn}
+
+\parindent 0pt
+\parskip 10pt
+
+
+\begin{document}
+\begin{center}
+\large{\textbf{OSE Lab Homework 1}}
+~\\
+Terry Tianhao Wu
+\end{center}
+\begin{spacing}{1.3}
+\textbf{Question 1. }The consumption allocation $\{c_0^i,c_s^i\}_{s}$, asset prices $\{p_1,p_2\}$ and investment $\{a_1^i,a_2^i\}$ for $i=1,2$ will constitute a competitive financial markets equilibrium if (1) Given the prices of financial assets, the allocation $\{c_0^i,c_s^i\}_{s}$ solves the following maximization problem:
+\begin{align*}
+\max_{c_0^i,c_s^i}~&v(c_0^i)+\frac{1}{S}\sum_s v(c_s^i)\\
+i.e.~&c_0^i+p_1a_1^i+p_2a_2^i\leq e_0^i\\
+~&c_s^i\leq e_s^i+a_1^ir_s^1+a_2^ir_s^2,\forall s\\
+~&c_0^i\geq 0, c_s^i \geq 0,
+\end{align*}
+for both $i=1$ and $i=2$; (2) The allocation is feasible i.e. $c_0^1+c_0^2=e_0^1+e_0^2$ and $c_s^1+c_s^2=e_s^1+e_s^2$ for all $s$; (3) Financial market clears i.e. $a_1^1+a_1^2=0$ and $a_2^1+a_2^2=0$.
+~\\~\\
+From the agent's problem, we are able to derive the first order condition with respect to $a_1^i$ and $a_2^i$:
+\begin{align*}
+&[a_1^i]: -p_1 v'(c_0^i)+\frac{1}{S}\sum_s r_s^1v'(c_s^i)=0\\
+&[a_2^i]: -p_2 v'(c_0^i)+\frac{1}{S}\sum_s r_s^2v'(c_s^i)=0.
+\end{align*}
+The market clearing conditions are: $c_0^1+c_0^2=e_0^1+e_0^2$, $c_s^1+c_s^2=e_s^1+e_s^2$ for all $s$, $a_1^1+a_1^2=0$ and $a_2^1+a_2^2=0$. Note with the financial market clearing conditions, the resource constrains are redundant. Using the four first order conditions and the two financial market clearing conditions, we are able to solve the equilibrium prices and the asset allocations. Then using the budget constrains, we could solve for the consumption allocations. As the first order conditions are highly non-linear, we need to turn to numerical method to solve for equilibrium. My Python code is attached and the results are summarized as follows.
+\begin{table}[H] 
+	\centering 
+	\begin{tabular}{ccccc} 
+		\hline
+		&$p_1 $ &$p_2$ & $a_1^1$ & $a_2^1$ \\
+		$\gamma=2$ 	&0.590  &0.737 & 0.020 & 0.000 \\
+		$\gamma=4$ 	&0.519 &0.648 & 0.004 & 0.000\\
+		$\gamma=8$  	&0.501 &0.626&0.000& 0.000 \\
+		$\gamma=166$ 	&0.500  &0.625 & 0.000&0.000\\
+		\hline
+	\end{tabular} 
+\caption{Equilibrium Prices and Asset Allocations}
+\end{table}
+
+\textbf{Question 3. }The dynamic programming problem can be written as (assuming zero depreciation)
+\begin{align*}
+V^1(k)=&\max_c~\log(c)+\beta E_{k'|k} V(k')\\
+&i.e.~c+k'=f(k,1)+k\\
+V^2(k)=&\max_c~\log(c)+\beta E_{k'|k} V(k')\\
+&i.e.~c+k'=f(k,2)+k
+\end{align*}
+My Python code is also attached.
+
+\textbf{Question 4. }The dynamic programming problem can be written as (assuming zero depreciation)
+\begin{align*}
+V^1(k)=&\max_c~\log(c)+\beta E_{k'|k} V(k')\\
+&i.e.~c+k'=f(k,1)+k\\
+V^2(k)=&\max_c~\log(c)+\beta E_{k'|k} V(k')\\
+&i.e.~c+k'=f(k,2)+k
+\end{align*}
+The respective Euler equations are: 
+\begin{align*}
+&\beta/2 [\frac{\partial V^1(k')}{\partial k'}+\frac{\partial V^2(k')}{\partial k'}]=1/c^1\\
+&\beta/2 [\frac{\partial V^1(k')}{\partial k'}+\frac{\partial V^2(k')}{\partial k'}]=1/c^2.
+\end{align*}
+By Envelop theorem, we have $\frac{\partial V^1(k)}{\partial k}=\frac{f'(k,1)+1}{c^1}$ and $\frac{\partial V^2(k)}{\partial k}=\frac{f'(k,2)+1}{c^2}$. Forward these one period and plug into the first order condition, we could get the stochastic Euler equation. We can write the Euler equation as
+\begin{align*}
+u'(f(k,s)-k_s')=\beta\frac{1}{2}\sum_{s=1}^{2}f'(k',s)u'(f(k',s)-k_s''),
+\end{align*}
+where we will approximate $k''$.
+
+When there is an innovation in the production function, we could rewrite the dynamic programming problem as
+\begin{align*}
+V^1(k,a)=&\max_c~\log(c)+\beta E_{k',a'|k,a} V(k',a')\\
+&i.e.~c+k'=f(a,k,1)+k, a'=0.9a+\epsilon\\
+V^2(k,a)=&\max_c~\log(c)+\beta E_{k',a'|k,a} V(k',a')\\
+&i.e.~c+k'=f(a,k,2)+k,a'=0.9a+\epsilon
+\end{align*}
+My code is attached.
+
+
+\end{spacing}
+\end{document}
